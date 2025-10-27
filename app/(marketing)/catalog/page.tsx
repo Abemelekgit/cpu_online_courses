@@ -9,6 +9,7 @@ import { Search, Filter, Star, Users, Clock, Play, BookOpen, Award, TrendingUp }
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import ClientImage from '@/components/ClientImage'
 
 interface Course {
@@ -91,6 +92,18 @@ export default function CatalogPage() {
       setLoading(false)
     }
   }
+
+  // Read `search` query param from the URL and keep state in sync.
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const param = searchParams?.get('search') || ''
+    // Only update state when param differs to avoid loops
+    setSearchQuery(param)
+    // reset to first page when new search param arrives
+    setPagination(prev => ({ ...prev, page: 1 }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams?.toString()])
 
   useEffect(() => {
     fetchCourses()

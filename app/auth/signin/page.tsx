@@ -197,9 +197,9 @@ function SignInForm() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <p className="font-medium mb-2">Demo accounts:</p>
-              <p>Admin: admin@school.local / admin123</p>
-              <p>Student: student@school.local / student123</p>
+              <p className="font-medium mb-2">Demo accounts (seeded):</p>
+              <p>Instructor: sarah.chen@cpuonline.com / instructor123</p>
+              <p>Student: john.doe@student.com / student123</p>
             </motion.div>
           </CardContent>
         </Card>

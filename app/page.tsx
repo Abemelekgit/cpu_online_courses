@@ -33,8 +33,9 @@ interface Course {
 
 async function getFeaturedCourses(): Promise<Course[]> {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/courses/featured`, {
+    // Use relative URL when running on the server to avoid external fetches during prerender
+    const url = process.env.NEXTAUTH_URL ? `${process.env.NEXTAUTH_URL}/api/courses/featured` : `/api/courses/featured`
+    const response = await fetch(url, {
       cache: 'no-store' // Ensure fresh data
     })
     
@@ -95,17 +96,18 @@ export default async function HomePage() {
 
               {/* Big Search Bar */}
               <div className="mb-12">
-                <div className="relative max-w-4xl mx-auto">
+                <form action="/catalog" method="get" className="relative max-w-4xl mx-auto">
                   <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-8 h-8" />
                   <input
+                    name="search"
                     type="text"
                     placeholder="Search for Computer Science courses, algorithms, systems, ML..."
                     className="w-full pl-16 pr-32 py-6 text-xl border-2 border-white/20 rounded-2xl focus:ring-4 focus:ring-purple-500/50 focus:border-transparent bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 hover:bg-white/20 transition-all duration-300"
                   />
-                  <Button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
+                  <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
                     Search
-                  </Button>
-                </div>
+                  </button>
+                </form>
               </div>
 
               {/* CTA Buttons */}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { auth } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
@@ -52,6 +52,9 @@ export async function POST(req: NextRequest) {
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
+
+    // Create admin client (reads server env vars at request time)
+    const supabaseAdmin = getSupabaseAdmin()
 
     // Upload to Supabase Storage
     const { data, error } = await supabaseAdmin.storage
