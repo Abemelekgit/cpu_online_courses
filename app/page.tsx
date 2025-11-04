@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Search, Star, Users, Clock, Play, Award, BookOpen, Shield } from 'lucide-react'
 import ClientImage from '@/components/ClientImage'
+import { prisma } from '@/lib/prisma'
 
 interface Course {
   id: string
@@ -33,20 +34,60 @@ interface Course {
 
 async function getFeaturedCourses(): Promise<Course[]> {
   try {
-    // Use relative URL when running on the server to avoid external fetches during prerender
-    const url = process.env.NEXTAUTH_URL ? `${process.env.NEXTAUTH_URL}/api/courses/featured` : `/api/courses/featured`
-    const response = await fetch(url, {
-      cache: 'no-store' // Ensure fresh data
+    const featuredCourses = await prisma.course.findMany({
+      where: { status: 'PUBLISHED' },
+      take: 6,
+      orderBy: [
+        { enrollments: { _count: 'desc' } },
+        { reviews: { _count: 'desc' } }
+      ],
+      include: {
+        createdBy: { select: { id: true, name: true, image: true } },
+        enrollments: { select: { id: true } },
+        reviews: { select: { rating: true } },
+        sections: { select: { lessons: { select: { id: true } } } },
+        courseTags: { include: { tag: true } }
+      }
     })
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch featured courses')
-    }
-    
-    const data = await response.json()
-    return data.courses || []
+
+    const coursesWithStats = featuredCourses.map(course => {
+      const enrollmentCount = course.enrollments.length
+      const reviewCount = course.reviews.length
+      const averageRating = reviewCount > 0
+        ? course.reviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
+        : 0
+      const totalLessons = course.sections.reduce((sum, section) => sum + section.lessons.length, 0)
+
+      return {
+        id: course.id,
+        slug: course.slug,
+        title: course.title,
+        subtitle: course.subtitle ?? '',
+        description: course.description ?? '',
+  priceCents: course.priceCents,
+  thumbnailUrl: course.thumbnailUrl ?? undefined,
+        category: course.category ?? '',
+        level: course.level ?? '',
+        language: course.language ?? '',
+        createdAt: course.createdAt instanceof Date ? course.createdAt.toISOString() : String(course.createdAt),
+        instructor: {
+          id: course.createdBy.id,
+          name: course.createdBy.name,
+          image: course.createdBy.image
+        },
+        stats: {
+          enrollmentCount,
+          reviewCount,
+          averageRating: Math.round(averageRating * 10) / 10,
+          totalLessons
+        },
+        tags: course.courseTags.map(ct => ct.tag.name)
+      }
+    })
+
+    return coursesWithStats
   } catch (error) {
-    console.error('Error fetching featured courses:', error)
+    console.error('Error fetching featured courses (prisma):', error)
     return []
   }
 }
