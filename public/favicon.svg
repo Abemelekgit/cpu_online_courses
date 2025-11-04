@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Books favicon">
+  <title>Books</title>
+  <rect width="64" height="64" rx="10" fill="#0b5cff" />
+  <g transform="translate(8,14) scale(0.85)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <!-- Left book -->
+    <path d="M4 6h18v22H4z" fill="#fff" opacity="0.06"/>
+    <path d="M4 6h18v22H4z"/>
+    <path d="M4 10h18" stroke-opacity="0.5"/>
+
+    <!-- Middle book (slightly open) -->
+    <path d="M20 6h18v22H20z" fill="#fff" opacity="0.08"/>
+    <path d="M20 6h18v22H20z"/>
+    <path d="M20 10h18" stroke-opacity="0.5"/>
+
+    <!-- Right book (angled) -->
+    <path d="M36 4l14 6v18l-14-6z" fill="#fff" opacity="0.04"/>
+    <path d="M36 4l14 6v18l-14-6z"/>
+    <path d="M36 10l14 6" stroke-opacity="0.5"/>
+
+    <!-- Decorative lines / spines -->
+    <path d="M8 14v10" stroke-opacity="0.6"/>
+    <path d="M24 14v10" stroke-opacity="0.6"/>
+    <path d="M42 12v10" stroke-opacity="0.6"/>
+  </g>
+</svg>
