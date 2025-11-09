@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { CheckCircle, BookOpen, Copy } from 'lucide-react'
+import { CheckCircle, BookOpen, Copy, Mail, Lock, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
@@ -111,21 +111,35 @@ function SignInForm() {
       />
 
       <motion.div
-        className="w-full max-w-4xl relative z-10 px-6"
+        className="w-full max-w-5xl relative z-10 px-6"
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6 }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <Card className="glass border-0 shadow-2xl p-6">
+          {/* Left hero / intro */}
+          <div className="hidden md:flex flex-col gap-6 pr-6">
+            <div className="hero-illustration p-6 h-full flex flex-col justify-center items-start rounded-2xl">
+              <div className="mb-4 w-20 h-20 bg-gradient-to-br from-orange-400 to-pink-400 rounded-3xl flex items-center justify-center accent-glow">
+                <BookOpen className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-4xl font-hero leading-tight">Welcome back to CPU Online</h1>
+              <p className="text-lg text-muted-foreground max-w-sm mt-2">Access courses, track progress, and continue learning where you left off. Fast sign in with seeded demo accounts for testing.</p>
+              <div className="mt-6 flex items-center gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm"> <Sparkles className="w-4 h-4 text-orange-500" /> Curated curriculum</span>
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm">Secure accounts</span>
+              </div>
+            </div>
+          </div>
+          <Card className="glass-border border-0 shadow-2xl p-8">
             <CardHeader className="text-left p-0">
-              <motion.div
-                className="mb-4 w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-2xl flex items-center justify-center"
-                whileHover={{ rotate: 5, scale: 1.02 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-              >
-                <BookOpen className="w-8 h-8 text-white" />
-              </motion.div>
+                <motion.div
+                  className="mb-4 w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-2xl flex items-center justify-center accent-glow"
+                  whileHover={{ rotate: 5, scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+                >
+                  <BookOpen className="w-8 h-8 text-white" />
+                </motion.div>
               <CardTitle className="text-2xl">Welcome Back</CardTitle>
               <CardDescription className="text-muted-foreground">
                 Sign in to continue to your courses and progress.
@@ -139,7 +153,7 @@ function SignInForm() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.12 }}
                 >
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="flex items-center gap-2"><Mail className="w-4 h-4 text-muted-foreground" /> Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -156,7 +170,7 @@ function SignInForm() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.18 }}
                 >
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="flex items-center gap-2"><Lock className="w-4 h-4 text-muted-foreground" /> Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -223,17 +237,17 @@ function SignInForm() {
           </Card>
 
           <div className="space-y-4">
-            <Card className="border-0 shadow-lg p-4">
+            <Card className="border-0 shadow-lg p-6 hero-illustration">
               <CardContent>
                 <h3 className="text-lg font-semibold">Demo accounts (seeded)</h3>
-                <p className="text-sm text-muted-foreground mb-3">Click the copy button to paste credentials into the form.</p>
+                <p className="text-sm text-muted-foreground mb-3">Click Fill to populate the form or Copy to copy credentials to clipboard.</p>
 
                 <DemoCredentialsRow
                   role="Instructor"
                   email="sarah.chen@cpuonline.com"
                   password="instructor123"
-                  onFill={(e) => {
-                    setEmail(e.email); setPassword(e.password)
+                  onFill={(creds) => {
+                    setEmail(creds.email); setPassword(creds.password)
                   }}
                 />
 
@@ -241,15 +255,15 @@ function SignInForm() {
                   role="Student"
                   email="john.doe@student.com"
                   password="student123"
-                  onFill={(e) => {
-                    setEmail(e.email); setPassword(e.password)
+                  onFill={(creds) => {
+                    setEmail(creds.email); setPassword(creds.password)
                   }}
                 />
               </CardContent>
             </Card>
 
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <p className="text-xs text-gray-500">Built with care — your progress and course data are saved to the seeded demo database.</p>
+              <p className="text-xs text-muted-foreground">Built with care — your progress and course data are saved to the seeded demo database.</p>
             </motion.div>
           </div>
         </div>

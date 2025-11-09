@@ -284,6 +284,27 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  /* Advanced UI helpers */
+  .glass-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
+    backdrop-filter: blur(12px) saturate(120%);
+    border: 1px solid rgba(255,255,255,0.45);
+  }
+
+  .accent-glow {
+    box-shadow: 0 8px 30px -10px rgba(11,92,255,0.25), 0 2px 8px -2px rgba(11,92,255,0.12);
+  }
+
+  .btn-hero {
+    background: linear-gradient(90deg,#0b5cff,#0ea5a8);
+    color: white;
+  }
+
+  .hero-illustration {
+    background: radial-gradient(circle at 10% 10%, rgba(11,92,255,0.08), transparent 12%), radial-gradient(circle at 90% 90%, rgba(14,165,168,0.06), transparent 14%);
+    border-radius: 1rem;
+  }
 }
 
 @keyframes bounce-gentle {
