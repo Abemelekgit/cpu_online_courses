@@ -101,7 +101,7 @@ export default async function HomePage() {
       {/* Promotional banner intentionally removed for free courses */}
 
       {/* Hero Section */}
-  <section className="relative min-h-screen gradient-primary text-black overflow-hidden">
+  <section className="relative min-h-screen bg-[linear-gradient(135deg,#071026,#0B6EBF)] text-white overflow-hidden">
         {/* Animated Background Elements */}
         {/* Animated Background Elements (layered blobs + subtle texture) */}
         <div className="absolute inset-0 pointer-events-none">
@@ -122,40 +122,38 @@ export default async function HomePage() {
         <div className="absolute bottom-16 left-1/4 w-24 h-24 gradient-accent rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }} />
 
         <div className="container mx-auto px-4 relative z-10">
-          {/* Light translucent backing behind hero content to improve text contrast */}
-          <div className="absolute inset-0 z-0 mx-auto max-w-6xl rounded-3xl bg-white/6 backdrop-blur-sm pointer-events-none" />
+          {/* Light backing behind hero content removed to avoid blurring text */}
+          <div className="absolute inset-0 z-0 mx-auto max-w-6xl rounded-3xl bg-transparent pointer-events-none" />
           <div className="flex items-center justify-center min-h-screen py-20">
             <div className="text-center max-w-6xl">
               {/* Main Hero Content */}
               <div>
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-                  Master
-                  <span className="block text-white drop-shadow-md">
-                    Computer Science
-                  </span>
+                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight font-hero">
+                  <span className="block">Master</span>
+                  <span className="block text-white drop-shadow-lg">Computer Science</span>
                 </h1>
 
-                <p className="text-2xl md:text-3xl text-black font-semibold mb-4">
+                <p className="text-2xl md:text-3xl text-white font-semibold mb-4">
                   All courses are free for college students — start learning today with no cost.
                 </p>
 
-                <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-                  Learn from industry experts. Build real-world projects. Master microprocessors,
-                  computer architecture, and embedded systems with hands-on courses.
+                <p className="text-xl md:text-2xl text-white mb-8 max-w-4xl mx-auto leading-relaxed">
+                  Learn from industry experts. Build real-world projects. Master algorithms,
+                  computer architecture, and systems with hands-on courses.
                 </p>
               </div>
 
               {/* Big Search Bar */}
               <div className="mb-12">
                 <form action="/catalog" method="get" className="relative max-w-4xl mx-auto">
-                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-black/80 w-8 h-8" />
+                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-white w-8 h-8" />
                   <input
                     name="search"
                     type="text"
                     placeholder="Search for Computer Science courses, algorithms, systems, ML..."
-                    className="w-full pl-16 pr-32 py-6 text-xl border-2 border-white/20 rounded-2xl focus:ring-4 focus:ring-purple-500/50 focus:border-transparent bg-white/10 backdrop-blur-sm text-black placeholder:text-black/60 hover:bg-white/20 transition-all duration-300"
+                    className="w-full pl-16 pr-32 py-6 text-xl border-2 border-white/20 rounded-2xl focus:ring-4 focus:ring-white/20 focus:border-transparent bg-white/10 text-white placeholder:text-white/70 hover:bg-white/20 transition-all duration-300"
                   />
-                  <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 gradient-primary text-black px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
+                  <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 btn-hero px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
                     Search
                   </button>
                 </form>
@@ -163,10 +161,10 @@ export default async function HomePage() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-                <Button asChild size="lg" className="gradient-primary text-black px-12 py-6 rounded-2xl text-xl font-bold shadow-2xl">
+                <Button asChild size="lg" className="btn-hero px-12 py-6 rounded-2xl text-xl font-bold">
                   <Link href="/catalog">Browse Free Courses</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-black hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
+                <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
                   <Link href="/auth/signup">Sign up (Free)</Link>
                 </Button>
               </div>
@@ -179,12 +177,12 @@ export default async function HomePage() {
                   { number: "95%", label: "Success Rate" }
                 ].map((stat, index) => (
                   <div key={stat.label} className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold text-black mb-2">
-                      {stat.number}
-                    </div>
-                    <div className="text-gray-300 text-lg">
-                      {stat.label}
-                    </div>
+                    <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                        {stat.number}
+                      </div>
+                      <div className="text-white text-lg">
+                        {stat.label}
+                      </div>
                   </div>
                 ))}
               </div>
@@ -205,7 +203,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Trending Computer Science Courses</h2>
-            <p className="text-xl text-gray-600">Most popular courses this week</p>
+              <p className="text-xl text-gray-600">Most popular courses this week</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -324,17 +322,17 @@ export default async function HomePage() {
       {/* Final CTA */}
   <section className="py-20 gradient-primary">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Master Computer Science?
           </h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
             Join thousands of students already learning with our comprehensive courses and expert instructors.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
               <Link href="/catalog">Browse All Courses</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-2 border-white text-black hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold">
+            <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold">
               <Link href="/auth/signup">Get Started Free</Link>
             </Button>
           </div>
