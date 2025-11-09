@@ -10,7 +10,13 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CurriculumBuilder } from '@/components/admin/CurriculumBuilder'
+import dynamic from 'next/dynamic'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
+
+const CurriculumBuilder = dynamic(
+  () => import('@/components/admin/CurriculumBuilder').then((mod) => mod.CurriculumBuilder),
+  { ssr: false, loading: () => <LoadingSpinner /> }
+)
 import { toast } from 'sonner'
 
 export default function EditCoursePage() {

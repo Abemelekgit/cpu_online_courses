@@ -20,8 +20,8 @@ interface Course {
   language: string
   instructor: {
     id: string
-    name: string
-    image?: string
+    name: string | null
+    image?: string | null
   }
   stats: {
     enrollmentCount: number
@@ -97,35 +97,45 @@ export default async function HomePage() {
   const courses = await getFeaturedCourses()
 
   return (
-    <div className="min-h-screen bg-white">
+  <div className="min-h-screen bg-white">
       {/* Promotional banner intentionally removed for free courses */}
 
       {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+  <section className="relative min-h-screen gradient-primary text-black overflow-hidden">
         {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-400/20 via-transparent to-transparent"></div>
-          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue-400/20 via-transparent to-transparent"></div>
+        {/* Animated Background Elements (layered blobs + subtle texture) */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* soft colored radial blobs */}
+          <div className="absolute -top-24 -left-24 w-3/4 h-3/4 gradient-accent rounded-full blur-3xl opacity-30 transform-gpu" />
+          <div className="absolute -bottom-32 right-0 w-2/3 h-2/3 gradient-primary rounded-full blur-3xl opacity-25 transform-gpu" />
+
+          {/* faint overlay to add depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-transparent mix-blend-overlay" />
+
+          {/* subtle diagonal stripe texture to avoid a flat background */}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(255,255,255,0.02),rgba(255,255,255,0.02)_2px,transparent_2px,transparent_6px)] opacity-8" />
         </div>
 
-        {/* Floating Geometric Shapes */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-xl animate-float"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-gradient-to-br from-orange-500/30 to-red-500/30 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        {/* Floating Geometric Shapes (animated) */}
+        <div className="absolute top-12 left-12 w-36 h-36 gradient-accent rounded-full blur-xl animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-40 right-16 w-28 h-28 gradient-primary rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-16 left-1/4 w-24 h-24 gradient-accent rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }} />
 
         <div className="container mx-auto px-4 relative z-10">
+          {/* Light translucent backing behind hero content to improve text contrast */}
+          <div className="absolute inset-0 z-0 mx-auto max-w-6xl rounded-3xl bg-white/6 backdrop-blur-sm pointer-events-none" />
           <div className="flex items-center justify-center min-h-screen py-20">
             <div className="text-center max-w-6xl">
               {/* Main Hero Content */}
               <div>
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
+                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
                   Master
-                  <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                  <span className="block text-white drop-shadow-md">
                     Computer Science
                   </span>
                 </h1>
 
-                <p className="text-2xl md:text-3xl text-white font-semibold mb-4">
+                <p className="text-2xl md:text-3xl text-black font-semibold mb-4">
                   All courses are free for college students — start learning today with no cost.
                 </p>
 
@@ -138,14 +148,14 @@ export default async function HomePage() {
               {/* Big Search Bar */}
               <div className="mb-12">
                 <form action="/catalog" method="get" className="relative max-w-4xl mx-auto">
-                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-8 h-8" />
+                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-black/80 w-8 h-8" />
                   <input
                     name="search"
                     type="text"
                     placeholder="Search for Computer Science courses, algorithms, systems, ML..."
-                    className="w-full pl-16 pr-32 py-6 text-xl border-2 border-white/20 rounded-2xl focus:ring-4 focus:ring-purple-500/50 focus:border-transparent bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 hover:bg-white/20 transition-all duration-300"
+                    className="w-full pl-16 pr-32 py-6 text-xl border-2 border-white/20 rounded-2xl focus:ring-4 focus:ring-purple-500/50 focus:border-transparent bg-white/10 backdrop-blur-sm text-black placeholder:text-black/60 hover:bg-white/20 transition-all duration-300"
                   />
-                  <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
+                  <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 gradient-primary text-black px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl">
                     Search
                   </button>
                 </form>
@@ -153,10 +163,10 @@ export default async function HomePage() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-                <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 rounded-2xl text-xl font-bold shadow-2xl">
+                <Button asChild size="lg" className="gradient-primary text-black px-12 py-6 rounded-2xl text-xl font-bold shadow-2xl">
                   <Link href="/catalog">Browse Free Courses</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
+                <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-black hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
                   <Link href="/auth/signup">Sign up (Free)</Link>
                 </Button>
               </div>
@@ -169,7 +179,7 @@ export default async function HomePage() {
                   { number: "95%", label: "Success Rate" }
                 ].map((stat, index) => (
                   <div key={stat.label} className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                    <div className="text-4xl md:text-5xl font-bold text-black mb-2">
                       {stat.number}
                     </div>
                     <div className="text-gray-300 text-lg">
@@ -201,9 +211,9 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.slice(0, 6).map((course, index) => (
               <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="aspect-video bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center relative overflow-hidden">
+                  <div className="aspect-video bg-card flex items-center justify-center relative overflow-hidden">
                       <ClientImage src={course.thumbnailUrl} alt={course.title} className="w-full h-full object-cover" />
-                  <Badge className="absolute top-4 right-4 bg-purple-600 text-white">
+                  <Badge className="absolute top-4 right-4 bg-purple-600 text-black">
                     {course.category}
                   </Badge>
                 </div>
@@ -273,7 +283,7 @@ export default async function HomePage() {
             ].map((category, index) => (
               <div key={category.title} className="group cursor-pointer">
                 <Card className="p-6 text-center hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className="w-16 h-16 gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <span className="text-3xl">{category.icon}</span>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{category.title}</h3>
@@ -285,8 +295,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-16 bg-gradient-to-br from-purple-50 to-blue-50">
+  {/* Why Choose Us */}
+  <section className="py-16 bg-card">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose CPU Online Courses?</h2>
@@ -300,8 +310,8 @@ export default async function HomePage() {
               { icon: Shield, title: 'Hands-on Projects', description: 'Build real-world applications and portfolio projects' }
             ].map((feature, index) => (
               <div key={feature.title} className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <feature.icon className="w-8 h-8 text-black" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
@@ -312,9 +322,9 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+  <section className="py-20 gradient-primary">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
             Ready to Master Computer Science?
           </h2>
           <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
@@ -324,7 +334,7 @@ export default async function HomePage() {
             <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
               <Link href="/catalog">Browse All Courses</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold">
+            <Button asChild variant="outline" size="lg" className="border-2 border-white text-black hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold">
               <Link href="/auth/signup">Get Started Free</Link>
             </Button>
           </div>

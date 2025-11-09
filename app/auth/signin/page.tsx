@@ -33,8 +33,8 @@ function DemoCredentialsRow({ role, email, password, onFill }: { role: string; e
   return (
     <div className="flex items-center justify-between mb-3">
       <div>
-        <div className="text-sm font-medium">{role}</div>
-        <div className="text-xs text-muted-foreground">{email} / <span className="font-mono">{password}</span></div>
+  <div className="text-sm font-medium text-black">{role}</div>
+  <div className="text-xs text-black/80">{email} / <span className="font-mono">{password}</span></div>
       </div>
       <div className="flex items-center gap-2">
         <Button size="sm" variant="ghost" onClick={() => onFill({ email, password })}>
@@ -123,15 +123,15 @@ function SignInForm() {
               <div className="mb-4 w-20 h-20 bg-gradient-to-br from-orange-400 to-pink-400 rounded-3xl flex items-center justify-center accent-glow">
                 <BookOpen className="w-10 h-10 text-white" />
               </div>
-              <h1 className="text-4xl font-hero leading-tight">Welcome back to CPU Online</h1>
-              <p className="text-lg text-muted-foreground max-w-sm mt-2">Access courses, track progress, and continue learning where you left off. Fast sign in with seeded demo accounts for testing.</p>
+              <h1 className="text-4xl font-hero leading-tight text-black">Welcome back to CPU Online</h1>
+              <p className="text-lg text-black/90 max-w-sm mt-2">Access courses, track progress, and continue learning where you left off. Fast sign in with seeded demo accounts for testing.</p>
               <div className="mt-6 flex items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm"> <Sparkles className="w-4 h-4 text-orange-500" /> Curated curriculum</span>
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm">Secure accounts</span>
               </div>
             </div>
           </div>
-          <Card className="glass-border border-0 shadow-2xl p-8">
+          <Card className="glass-border border-0 shadow-2xl p-8 bg-card text-black">
             <CardHeader className="text-left p-0">
                 <motion.div
                   className="mb-4 w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-2xl flex items-center justify-center accent-glow"
@@ -140,8 +140,8 @@ function SignInForm() {
                 >
                   <BookOpen className="w-8 h-8 text-white" />
                 </motion.div>
-              <CardTitle className="text-2xl">Welcome Back</CardTitle>
-              <CardDescription className="text-muted-foreground">
+              <CardTitle className="text-2xl text-black">Welcome Back</CardTitle>
+              <CardDescription className="text-black/80">
                 Sign in to continue to your courses and progress.
               </CardDescription>
             </CardHeader>
@@ -153,14 +153,14 @@ function SignInForm() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.12 }}
                 >
-                  <Label htmlFor="email" className="flex items-center gap-2"><Mail className="w-4 h-4 text-muted-foreground" /> Email</Label>
+                  <Label htmlFor="email" className="flex items-center gap-2 text-black"><Mail className="w-4 h-4 text-black/70" /> Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="rounded-xl"
+                    className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
                     placeholder="you@example.com"
                   />
                 </motion.div>
@@ -170,14 +170,14 @@ function SignInForm() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.18 }}
                 >
-                  <Label htmlFor="password" className="flex items-center gap-2"><Lock className="w-4 h-4 text-muted-foreground" /> Password</Label>
+                  <Label htmlFor="password" className="flex items-center gap-2 text-black"><Lock className="w-4 h-4 text-black/70" /> Password</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="rounded-xl"
+                    className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
                     placeholder="••••••••"
                   />
                 </motion.div>
@@ -188,7 +188,7 @@ function SignInForm() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
-                    <Alert className="rounded-xl">
+                    <Alert className="rounded-xl bg-card text-black">
                       <CheckCircle className="h-4 w-4" />
                       <AlertDescription>{successMessage}</AlertDescription>
                     </Alert>
@@ -201,7 +201,7 @@ function SignInForm() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
-                    <Alert variant="destructive" className="rounded-xl">
+                    <Alert variant="destructive" className="rounded-xl bg-card text-black">
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   </motion.div>
@@ -225,7 +225,7 @@ function SignInForm() {
                 </motion.div>
               </form>
 
-              <motion.div className="mt-4 flex justify-between items-center text-sm text-gray-600" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                <motion.div className="mt-4 flex justify-between items-center text-sm text-black/85" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                 <p>
                   Don't have an account?{' '}
                   <Link href="/auth/signup" className="font-medium text-orange-600 hover:text-orange-500 transition-colors">
@@ -237,10 +237,10 @@ function SignInForm() {
           </Card>
 
           <div className="space-y-4">
-            <Card className="border-0 shadow-lg p-6 hero-illustration">
+            <Card className="border-0 shadow-lg p-6 hero-illustration bg-card text-black">
               <CardContent>
                 <h3 className="text-lg font-semibold">Demo accounts (seeded)</h3>
-                <p className="text-sm text-muted-foreground mb-3">Click Fill to populate the form or Copy to copy credentials to clipboard.</p>
+                <p className="text-sm text-black/80 mb-3">Click Fill to populate the form or Copy to copy credentials to clipboard.</p>
 
                 <DemoCredentialsRow
                   role="Instructor"
@@ -263,7 +263,7 @@ function SignInForm() {
             </Card>
 
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <p className="text-xs text-muted-foreground">Built with care — your progress and course data are saved to the seeded demo database.</p>
+              <p className="text-xs text-black/75">Built with care — your progress and course data are saved to the seeded demo database.</p>
             </motion.div>
           </div>
         </div>
@@ -287,7 +287,7 @@ export default function SignInPage() {
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          <motion.p
+          <motion.p className="text-black"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >

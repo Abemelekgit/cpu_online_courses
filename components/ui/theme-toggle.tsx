@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Sun, Moon, Globe, Droplet } from 'lucide-react'
 
-export default function ThemeToggle() {
+function ThemeToggle() {
   const { theme, setTheme } = useTheme()
 
   return (
@@ -36,3 +36,5 @@ export default function ThemeToggle() {
     </DropdownMenu>
   )
 }
+
+export default React.memo(ThemeToggle)

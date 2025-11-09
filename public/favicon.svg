@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Books favicon">
   <title>Books</title>
-  <rect width="64" height="64" rx="10" fill="#0b5cff" />
+  <rect width="64" height="64" rx="10" fill="#0B6EBF" />
   <g transform="translate(8,14) scale(0.85)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
     <!-- Left book -->
     <path d="M4 6h18v22H4z" fill="#fff" opacity="0.06"/>

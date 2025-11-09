@@ -8,7 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Play, CheckCircle, Lock, Clock } from 'lucide-react'
 import { LoadingSpinner, LessonSkeleton } from '@/components/LoadingSpinner'
-import { VideoPlayer } from '@/components/player/VideoPlayer'
+import dynamic from 'next/dynamic'
+const VideoPlayer = dynamic(() => import('@/components/player/VideoPlayer').then(m => m.VideoPlayer), { ssr: false, loading: () => <div className="min-h-[360px] flex items-center justify-center">Loading video…</div> })
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
