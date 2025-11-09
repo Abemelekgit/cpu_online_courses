@@ -12,35 +12,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
-
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            return null
           }
-        })
 
-        if (!user) {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string
+            }
+          })
+
+          // If user not found or doesn't have a password (e.g. OAuth-only account), treat as invalid
+          if (!user || !user.password) {
+            return null
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password as string,
+            user.password
+          )
+
+          if (!isPasswordValid) {
+            return null
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            role: user.role,
+          }
+        } catch (err) {
+          // Log unexpected errors for debugging but don't throw to avoid CredentialsSignin
+          // being raised by the library; returning null signals invalid credentials.
+          // You can remove or adjust this logging in production.
+          // eslint-disable-next-line no-console
+          console.error('NextAuth authorize error:', err)
           return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        )
-
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          role: user.role,
         }
       }
     })

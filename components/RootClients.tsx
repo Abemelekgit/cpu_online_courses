@@ -4,13 +4,16 @@ import React from 'react'
 import { SessionProvider } from 'next-auth/react'
 import { Toaster } from '@/components/ui/sonner'
 import { Navigation } from '@/components/Navigation'
+import { ThemeProvider } from 'next-themes'
 
 export default function RootClients({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
-      <Navigation />
-      {children}
-      <Toaster />
-    </SessionProvider>
+    <ThemeProvider attribute="class" defaultTheme="system">
+      <SessionProvider>
+        <Navigation />
+        {children}
+        <Toaster />
+      </SessionProvider>
+    </ThemeProvider>
   )
 }

@@ -183,6 +183,43 @@
   --shadow-2xl: 0px 4px 6px 0px hsl(240 30% 25% / 0.30);
 }
 
+/* Additional curated themes */
+.ocean {
+  --background: #E6F7FF;
+  --foreground: #04263A;
+  --card: #FFFFFF;
+  --card-foreground: #04263A;
+  --popover: #F0FBFF;
+  --popover-foreground: #04263A;
+  --primary: #0B7DBB; /* ocean blue */
+  --primary-foreground: #ffffff;
+  --accent: #11B5D2;
+  --accent-foreground: #04263A;
+  --muted: #EAF6FA;
+  --muted-foreground: #245867;
+  --border: #D7EEF8;
+  --input: #F5FBFD;
+  --ring: #8FD3E8;
+}
+
+.sunset {
+  --background: #FFF6F2;
+  --foreground: #3A1F0B;
+  --card: #ffffff;
+  --card-foreground: #3A1F0B;
+  --popover: #FFF9F6;
+  --popover-foreground: #3A1F0B;
+  --primary: #FF6B4A; /* warm sunset */
+  --primary-foreground: #ffffff;
+  --accent: #FF9A76;
+  --accent-foreground: #3A1F0B;
+  --muted: #FFF1ED;
+  --muted-foreground: #7A4B3A;
+  --border: #FFE6DB;
+  --input: #FFF7F3;
+  --ring: #FFB39A;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

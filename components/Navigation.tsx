@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { BookOpen, User, LogOut, Settings, Search, ShoppingCart, Globe } from 'lucide-react'
+import ThemeToggle from '@/components/ui/theme-toggle'
 
 export function Navigation() {
   const { data: session, status } = useSession()
@@ -70,6 +71,7 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             {status === 'loading' ? (
               <motion.div 
                 className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"
