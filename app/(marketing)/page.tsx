@@ -660,14 +660,6 @@ export default function HomePage() {
                   <Link href="/catalog">Browse All Courses</Link>
                 </Button>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold rounded-full">
-                  <Link href="/auth/signup">Get Started Free</Link>
-                </Button>
-              </motion.div>
             </div>
           </motion.div>
         </div>

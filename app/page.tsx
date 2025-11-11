@@ -337,9 +337,6 @@ export default async function HomePage() {
             <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
               <Link href="/catalog">Browse All Courses</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 text-lg font-semibold">
-              <Link href="/auth/signup">Get Started Free</Link>
-            </Button>
           </div>
         </div>
       </section>
