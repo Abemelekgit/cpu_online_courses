@@ -54,6 +54,9 @@ export default function CatalogPage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  // inputValue is the immediate value bound to the input while
+  // searchQuery is the debounced/official value used to fetch results.
+  const [inputValue, setInputValue] = useState('')
   const [category, setCategory] = useState('')
   const [level, setLevel] = useState('')
   const [sortBy, setSortBy] = useState('popularity')
@@ -100,10 +103,27 @@ export default function CatalogPage() {
     const param = searchParams?.get('search') || ''
     // Only update state when param differs to avoid loops
     setSearchQuery(param)
+    setInputValue(param)
     // reset to first page when new search param arrives
     setPagination(prev => ({ ...prev, page: 1 }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams?.toString()])
+
+  // Debounce input -> setSearchQuery so we don't fetch on every keystroke.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // only update if different to avoid extra fetches
+      // require at least 3 chars to auto-search to avoid firing on short fragments
+      if (inputValue.length === 0 || inputValue.length >= 3) {
+        setPagination(prev => ({ ...prev, page: 1 }))
+        setSearchQuery(inputValue)
+      }
+      // otherwise don't trigger a fetch yet (wait for more characters or submit)
+    }, 600)
+
+    return () => clearTimeout(timer)
+    // we intentionally do not include setPagination or setSearchQuery in deps
+  }, [inputValue])
 
   useEffect(() => {
     fetchCourses()
@@ -111,8 +131,9 @@ export default function CatalogPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    // apply the input value immediately when user submits
     setPagination(prev => ({ ...prev, page: 1 }))
-    fetchCourses()
+    setSearchQuery(inputValue)
   }
 
   const totalLessons = courses.reduce((acc, course) => acc + course.stats.totalLessons, 0)
@@ -229,8 +250,8 @@ export default function CatalogPage() {
                 <Input
                   placeholder="Search courses..."
                   className="pl-10 rounded-xl"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
                 />
               </div>
             </div>
