@@ -165,7 +165,7 @@ export default async function HomePage() {
                   <Link href="/catalog">Browse Free Courses</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
-                  <Link href="/auth/signup">Sign up (Free)</Link>
+                  <Link href="/auth/signup">Sign up</Link>
                 </Button>
               </div>
 
