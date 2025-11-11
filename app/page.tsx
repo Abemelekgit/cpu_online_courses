@@ -164,7 +164,12 @@ export default async function HomePage() {
                 <Button asChild size="lg" className="btn-hero px-12 py-6 rounded-2xl text-xl font-bold">
                   <Link href="/catalog">Browse Free Courses</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-2xl text-xl font-bold backdrop-blur-sm">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-2 border-white/70 text-white bg-transparent hover:bg-blue-600 hover:border-blue-600 hover:text-white px-12 py-6 rounded-2xl text-xl font-bold"
+                >
                   <Link href="/auth/signup">Sign up</Link>
                 </Button>
               </div>
