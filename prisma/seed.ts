@@ -27,7 +27,7 @@ async function main() {
         name: 'Dr. Sarah Chen',
         password: instructorPassword,
         role: 'ADMIN',
-        image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/ashenafifrontpicture.jpg',
       },
     }),
     prisma.user.create({
@@ -36,7 +36,7 @@ async function main() {
         name: 'Prof. Michael Rodriguez',
         password: instructorPassword,
         role: 'ADMIN',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/millionpicture.jpg',
       },
     }),
     prisma.user.create({
@@ -45,7 +45,7 @@ async function main() {
         name: 'Dr. Alex Thompson',
         password: instructorPassword,
         role: 'ADMIN',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/rekikepic.jpg',
       },
     }),
     prisma.user.create({
@@ -54,7 +54,7 @@ async function main() {
         name: 'Dr. Lisa Wang',
         password: instructorPassword,
         role: 'ADMIN',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/millionpicture.jpg',
       },
     }),
   ])
