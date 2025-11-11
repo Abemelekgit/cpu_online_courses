@@ -55,7 +55,7 @@ export default function CatalogPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   // inputValue is the immediate value bound to the input while
-  // searchQuery is the debounced/official value used to fetch results.
+  // searchQuery is the last submitted value used to fetch results.
   const [inputValue, setInputValue] = useState('')
   const [category, setCategory] = useState('')
   const [level, setLevel] = useState('')
@@ -109,21 +109,7 @@ export default function CatalogPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams?.toString()])
 
-  // Debounce input -> setSearchQuery so we don't fetch on every keystroke.
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // only update if different to avoid extra fetches
-      // require at least 3 chars to auto-search to avoid firing on short fragments
-      if (inputValue.length === 0 || inputValue.length >= 3) {
-        setPagination(prev => ({ ...prev, page: 1 }))
-        setSearchQuery(inputValue)
-      }
-      // otherwise don't trigger a fetch yet (wait for more characters or submit)
-    }, 600)
-
-    return () => clearTimeout(timer)
-    // we intentionally do not include setPagination or setSearchQuery in deps
-  }, [inputValue])
+  // No auto-search: wait for explicit submit to update `searchQuery`.
 
   useEffect(() => {
     fetchCourses()
