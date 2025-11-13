@@ -333,7 +333,7 @@ export default function HomePage() {
             {[
               {
                 title: "CPU Architecture Fundamentals",
-                instructor: "Dr. Sarah Chen",
+                instructor: "Ashenafi",
                 rating: 4.9,
                 students: 12500,
                 price: "$89.99",

@@ -24,7 +24,7 @@ async function main() {
     prisma.user.create({
       data: {
         email: 'sarah.chen@cpuonline.com',
-        name: 'Dr. Sarah Chen',
+  name: 'Ashenafi',
         password: instructorPassword,
         role: 'ADMIN',
         image: '/api/assets/ashenafifrontpicture.jpg',

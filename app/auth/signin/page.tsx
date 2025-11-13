@@ -146,7 +146,7 @@ function SignInForm() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
                 <motion.div
                   className="space-y-2"
                   initial={{ opacity: 0, x: -12 }}
@@ -156,11 +156,13 @@ function SignInForm() {
                   <Label htmlFor="email" className="flex items-center gap-2 text-black"><Mail className="w-4 h-4 text-black/70" /> Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
+                    autoComplete="email"
                     placeholder="you@example.com"
                   />
                 </motion.div>
@@ -173,11 +175,13 @@ function SignInForm() {
                   <Label htmlFor="password" className="flex items-center gap-2 text-black"><Lock className="w-4 h-4 text-black/70" /> Password</Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
+                    autoComplete="new-password"
                     placeholder="••••••••"
                   />
                 </motion.div>
