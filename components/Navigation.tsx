@@ -1,8 +1,9 @@
 'use client'
 
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -12,6 +13,28 @@ import ThemeToggle from '@/components/ui/theme-toggle'
 
 function NavigationComponent() {
   const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    const routesToPrefetch = ['/catalog', '/my-learning', '/auth/signin', '/auth/signup']
+
+    routesToPrefetch.forEach((path) => {
+      try {
+        router.prefetch(path)
+      } catch {
+        // Ignore prefetch errors (e.g. route not yet compiled in dev)
+      }
+    })
+
+    const userRole = (session?.user as any)?.role
+    if (userRole === 'ADMIN') {
+      try {
+        router.prefetch('/admin')
+      } catch {
+        // no-op if admin route prefetch fails
+      }
+    }
+  }, [router, session?.user])
 
   return (
     <motion.nav
