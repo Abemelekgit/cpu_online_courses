@@ -8,7 +8,7 @@ import { ThemeProvider } from 'next-themes'
 
 export default function RootClients({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system">
+    <ThemeProvider attribute="class" defaultTheme="sunset" enableSystem>
       <SessionProvider>
         <Navigation />
         {children}

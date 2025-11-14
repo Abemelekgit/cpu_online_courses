@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Educational favicon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="64" height="64" rx="12" fill="url(#bg)" />
+  <path d="M16 20h13c4.5 0 8 1.7 10 4 2-2.3 5.5-4 10-4h13v26H49c-4.5 0-8 1.7-10 4-2-2.3-5.5-4-10-4H16V20z" fill="#f8fafc" />
+  <path d="M29 24v16c-2.3-1.2-4.8-1.8-8-1.8h-5V24h5c3.2 0 5.7 0.6 8 1.8zm6 0v16c2.3-1.2 4.8-1.8 8-1.8h5V24h-5c-3.2 0-5.7 0.6-8 1.8z" fill="#1e3a8a" fill-opacity="0.85" />
+</svg>
