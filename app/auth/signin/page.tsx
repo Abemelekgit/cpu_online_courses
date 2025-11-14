@@ -146,7 +146,7 @@ function SignInForm() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
-              <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
+              <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
                 <motion.div
                   className="space-y-2"
                   initial={{ opacity: 0, x: -12 }}
@@ -181,7 +181,7 @@ function SignInForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
-                    autoComplete="new-password"
+                    autoComplete="current-password"
                     placeholder="••••••••"
                   />
                 </motion.div>

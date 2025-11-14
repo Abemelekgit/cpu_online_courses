@@ -174,23 +174,7 @@ export default async function HomePage() {
                 </Button>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                {[
-                  { number: "50K+", label: "Students Learning" },
-                  { number: "200+", label: "Expert Courses" },
-                  { number: "95%", label: "Success Rate" }
-                ].map((stat, index) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-                        {stat.number}
-                      </div>
-                      <div className="text-white text-lg">
-                        {stat.label}
-                      </div>
-                  </div>
-                ))}
-              </div>
+              {/* Stats removed per request */}
             </div>
           </div>
         </div>
