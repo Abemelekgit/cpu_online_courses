@@ -1,11 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Educational favicon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CPU Online icon">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2563eb" />
-      <stop offset="100%" stop-color="#06b6d4" />
+    <linearGradient id="sunset-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff8a5d" />
+      <stop offset="50%" stop-color="#ff6b6b" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+    <linearGradient id="book-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.75" />
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="64" height="64" rx="12" fill="url(#bg)" />
-  <path d="M16 20h13c4.5 0 8 1.7 10 4 2-2.3 5.5-4 10-4h13v26H49c-4.5 0-8 1.7-10 4-2-2.3-5.5-4-10-4H16V20z" fill="#f8fafc" />
-  <path d="M29 24v16c-2.3-1.2-4.8-1.8-8-1.8h-5V24h5c3.2 0 5.7 0.6 8 1.8zm6 0v16c2.3-1.2 4.8-1.8 8-1.8h5V24h-5c-3.2 0-5.7 0.6-8 1.8z" fill="#1e3a8a" fill-opacity="0.85" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#sunset-gradient)" />
+  <g transform="translate(16 18)" fill="url(#book-shine)">
+    <path d="M8 4h6c4.5 0 7.5 1.2 10 4.2v15.3c-2.7-2.5-5.5-3.5-10-3.5H8z" />
+    <path d="M24 4h-6c-4.5 0-7.5 1.2-10 4.2v15.3c2.7-2.5 5.5-3.5 10-3.5h6z" />
+  </g>
+  <g transform="translate(16 18)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 4h6c4.5 0 7.5 1.2 10 4.2 2.5-3 5.5-4.2 10-4.2h6" stroke-opacity="0.8" stroke-width="2" />
+    <path d="M8 4v19.5c2.5-2.2 5.3-3.1 9-3.1h3" stroke-opacity="0.6" stroke-width="1.8" />
+    <path d="M34 4v19.5c-2.5-2.2-5.3-3.1-9-3.1h-3" stroke-opacity="0.6" stroke-width="1.8" />
+    <path d="M21 9.5l2.5 2.5 2.5-2.5" stroke-width="1.6" />
+  </g>
+  <circle cx="32" cy="17" r="6" fill="#fff4ec" opacity="0.85" />
+  <path d="M24 42h16" stroke="#ffffff" stroke-linecap="round" stroke-width="3" stroke-opacity="0.75" />
+  <path d="M20 46h24" stroke="#ffffff" stroke-linecap="round" stroke-width="2" stroke-opacity="0.6" />
 </svg>
