@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -37,6 +37,8 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
   const [pagination, setPagination] = useState<PaginationState>(initialData.pagination)
 
   const isFirstLoadRef = useRef(true)
+  const abortRef = useRef<AbortController | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     setCourses(initialData.courses)
@@ -49,7 +51,14 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
     isFirstLoadRef.current = true
   }, [initialData, initialFilters])
 
+  useEffect(() => () => {
+    abortRef.current?.abort()
+  }, [])
+
   const fetchCourses = async (overridePage?: number) => {
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
     setLoading(true)
     try {
       const params = new URLSearchParams({
@@ -64,6 +73,7 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
 
       const response = await fetch(`/api/courses/public?${params.toString()}`, {
         cache: 'no-store',
+        signal: controller.signal,
       })
 
       if (!response.ok) {
@@ -71,12 +81,19 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
       }
 
       const data: PublicCoursesResponse = await response.json()
-      setCourses(data.courses)
-      setPagination((prev) => ({ ...prev, ...data.pagination }))
+      startTransition(() => {
+        setCourses(data.courses)
+        setPagination((prev) => ({ ...prev, ...data.pagination }))
+      })
     } catch (error) {
+      if ((error as DOMException)?.name === 'AbortError') {
+        return
+      }
       console.error('Error fetching courses:', error)
     } finally {
-      setLoading(false)
+      if (!controller.signal.aborted) {
+        setLoading(false)
+      }
     }
   }
 
@@ -96,8 +113,9 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
 
   const totalLessons = useMemo(() => courses.reduce((acc, course) => acc + course.stats.totalLessons, 0), [courses])
   const totalStudents = useMemo(() => courses.reduce((acc, course) => acc + course.stats.enrollmentCount, 0), [courses])
+  const pending = loading || isPending
 
-  if (loading && courses.length === 0) {
+  if (pending && courses.length === 0) {
     return (
       <div className="min-h-screen gradient-cool flex items-center justify-center">
         <motion.div
@@ -260,11 +278,14 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
             </div>
 
             <div className="flex items-end">
-              <Button type="submit" className="w-full h-12 gradient-accent rounded-xl font-semibold">
+              <Button type="submit" className="w-full h-12 gradient-accent rounded-xl font-semibold" disabled={pending} aria-busy={pending}>
                 <Search className="w-4 h-4 mr-2" />
                 Search
               </Button>
             </div>
+            {pending && (
+              <div className="md:col-span-5 h-1 mt-2 rounded-full bg-gradient-to-r from-sky-400 via-blue-500 to-orange-400 animate-pulse" />
+            )}
           </form>
         </motion.div>
 
@@ -364,7 +385,7 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
               <Button
                 variant="outline"
                 onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
-                disabled={!pagination.hasPrev || loading}
+                disabled={!pagination.hasPrev || pending}
                 className="rounded-xl"
               >
                 Previous
@@ -375,7 +396,7 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
               <Button
                 variant="outline"
                 onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
-                disabled={!pagination.hasNext || loading}
+                disabled={!pagination.hasNext || pending}
                 className="rounded-xl"
               >
                 Next

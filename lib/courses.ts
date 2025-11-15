@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 
 export type SortOption = 'popularity' | 'rating' | 'newest' | 'price-low' | 'price-high'
@@ -53,23 +54,21 @@ type PublicCourseFilters = {
   maxPrice?: number | null
 }
 
-export async function getPublicCourses(params: PublicCourseFilters = {}): Promise<PublicCoursesResponse> {
-  const {
-    page = 1,
-    limit = 20,
-    category,
-    level,
-    search,
-    sortBy = 'popularity',
-    minPrice,
-    maxPrice,
-  } = params
+type NormalizedFilters = {
+  page: number
+  limit: number
+  category: string | null
+  level: string | null
+  search: string | null
+  sortBy: SortOption
+  minPrice: number | null
+  maxPrice: number | null
+}
 
-  const safePage = Math.max(1, page)
-  const safeLimit = Math.max(1, Math.min(limit, 100))
-  const skip = (safePage - 1) * safeLimit
+const fetchPublicCourses = unstable_cache(async (filters: NormalizedFilters): Promise<PublicCoursesResponse> => {
+  const { page, limit, category, level, search, sortBy, minPrice, maxPrice } = filters
 
-  const where: any = { status: 'PUBLISHED' }
+  const where: Record<string, unknown> = { status: 'PUBLISHED' }
 
   if (category) {
     where.category = category
@@ -87,17 +86,17 @@ export async function getPublicCourses(params: PublicCourseFilters = {}): Promis
     ]
   }
 
-  if (minPrice || maxPrice) {
+  if (minPrice !== null || maxPrice !== null) {
     where.priceCents = {}
-    if (minPrice) {
-      where.priceCents.gte = minPrice * 100
+    if (minPrice !== null) {
+      ;(where.priceCents as Record<string, number>).gte = minPrice * 100
     }
-    if (maxPrice) {
-      where.priceCents.lte = maxPrice * 100
+    if (maxPrice !== null) {
+      ;(where.priceCents as Record<string, number>).lte = maxPrice * 100
     }
   }
 
-  let orderBy: any = { enrollments: { _count: 'desc' } }
+  let orderBy: Record<string, unknown> = { enrollments: { _count: 'desc' } }
   switch (sortBy) {
     case 'rating':
       orderBy = { reviews: { _count: 'desc' } }
@@ -118,10 +117,21 @@ export async function getPublicCourses(params: PublicCourseFilters = {}): Promis
 
   const courses = await prisma.course.findMany({
     where,
-    skip,
-    take: safeLimit,
+    skip: (page - 1) * limit,
+    take: limit,
     orderBy,
-    include: {
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      subtitle: true,
+      description: true,
+      priceCents: true,
+      thumbnailUrl: true,
+      category: true,
+      level: true,
+      language: true,
+      createdAt: true,
       createdBy: {
         select: {
           id: true,
@@ -129,9 +139,10 @@ export async function getPublicCourses(params: PublicCourseFilters = {}): Promis
           image: true,
         },
       },
-      enrollments: {
+      _count: {
         select: {
-          id: true,
+          enrollments: true,
+          reviews: true,
         },
       },
       reviews: {
@@ -141,48 +152,51 @@ export async function getPublicCourses(params: PublicCourseFilters = {}): Promis
       },
       sections: {
         select: {
-          lessons: {
+          _count: {
             select: {
-              id: true,
+              lessons: true,
             },
           },
         },
       },
       courseTags: {
-        include: {
-          tag: true,
+        select: {
+          tag: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },
   })
 
   const coursesWithStats: PublicCourse[] = courses.map((course) => {
-    const enrollmentCount = course.enrollments.length
-    const reviewCount = course.reviews.length
+    const reviewCount = course._count.reviews
     const averageRating = reviewCount > 0
       ? course.reviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
       : 0
-    const totalLessons = course.sections.reduce((sum, section) => sum + section.lessons.length, 0)
+    const totalLessons = course.sections.reduce((sum, section) => sum + section._count.lessons, 0)
 
     return {
       id: course.id,
       slug: course.slug,
       title: course.title,
-  subtitle: course.subtitle ?? '',
-  description: course.description ?? '',
+      subtitle: course.subtitle ?? '',
+      description: course.description ?? '',
       priceCents: course.priceCents,
       thumbnailUrl: course.thumbnailUrl,
-  category: course.category ?? 'General',
-  level: course.level ?? 'All Levels',
-  language: course.language ?? 'English',
-  createdAt: course.createdAt.toISOString(),
+      category: course.category ?? 'General',
+      level: course.level ?? 'All Levels',
+      language: course.language ?? 'English',
+      createdAt: course.createdAt.toISOString(),
       instructor: {
         id: course.createdBy.id,
         name: course.createdBy.name,
         image: course.createdBy.image,
       },
       stats: {
-        enrollmentCount,
+        enrollmentCount: course._count.enrollments,
         reviewCount,
         averageRating: Math.round(averageRating * 10) / 10,
         totalLessons,
@@ -192,17 +206,51 @@ export async function getPublicCourses(params: PublicCourseFilters = {}): Promis
   })
 
   const totalCount = await prisma.course.count({ where })
-  const totalPages = Math.ceil(totalCount / safeLimit)
+  const totalPages = Math.ceil(totalCount / limit)
 
   return {
     courses: coursesWithStats,
     pagination: {
-      page: safePage,
-      limit: safeLimit,
+      page,
+      limit,
       totalCount,
       totalPages,
-      hasNext: safePage < totalPages,
-      hasPrev: safePage > 1,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
     },
   }
+}, ['public-courses'], { revalidate: 180 })
+
+function normalizeFilters(params: PublicCourseFilters = {}): NormalizedFilters {
+  const {
+    page = 1,
+    limit = 20,
+    category = null,
+    level = null,
+    search = null,
+    sortBy = 'popularity',
+    minPrice = null,
+    maxPrice = null,
+  } = params
+
+  const safePage = Math.max(1, page)
+  const safeLimit = Math.max(1, Math.min(limit, 100))
+  const allowedSorts: SortOption[] = ['popularity', 'rating', 'newest', 'price-low', 'price-high']
+  const normalizedSort = allowedSorts.includes(sortBy) ? sortBy : 'popularity'
+
+  return {
+    page: safePage,
+    limit: safeLimit,
+    category: category ? category : null,
+    level: level ? level : null,
+    search: search ? search : null,
+    sortBy: normalizedSort,
+    minPrice,
+    maxPrice,
+  }
+}
+
+export async function getPublicCourses(params: PublicCourseFilters = {}): Promise<PublicCoursesResponse> {
+  const normalized = normalizeFilters(params)
+  return fetchPublicCourses(normalized)
 }

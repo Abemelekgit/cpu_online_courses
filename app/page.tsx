@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +19,7 @@ interface Course {
   category: string
   level: string
   language: string
+  createdAt: string
   instructor: {
     id: string
     name: string | null
@@ -32,7 +34,7 @@ interface Course {
   tags: string[]
 }
 
-async function getFeaturedCourses(): Promise<Course[]> {
+const getFeaturedCourses = unstable_cache(async (): Promise<Course[]> => {
   try {
     const featuredCourses = await prisma.course.findMany({
       where: { status: 'PUBLISHED' },
@@ -41,22 +43,59 @@ async function getFeaturedCourses(): Promise<Course[]> {
         { enrollments: { _count: 'desc' } },
         { reviews: { _count: 'desc' } }
       ],
-      include: {
-        createdBy: { select: { id: true, name: true, image: true } },
-        enrollments: { select: { id: true } },
-        reviews: { select: { rating: true } },
-        sections: { select: { lessons: { select: { id: true } } } },
-        courseTags: { include: { tag: true } }
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        description: true,
+        priceCents: true,
+        thumbnailUrl: true,
+        category: true,
+        level: true,
+        language: true,
+        createdAt: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            image: true
+          }
+        },
+        _count: {
+          select: {
+            enrollments: true,
+            reviews: true
+          }
+        },
+        reviews: {
+          select: {
+            rating: true
+          }
+        },
+        sections: {
+          select: {
+            _count: {
+              select: { lessons: true }
+            }
+          }
+        },
+        courseTags: {
+          select: {
+            tag: {
+              select: { name: true }
+            }
+          }
+        }
       }
     })
 
-    const coursesWithStats = featuredCourses.map(course => {
-      const enrollmentCount = course.enrollments.length
-      const reviewCount = course.reviews.length
+    return featuredCourses.map(course => {
+      const reviewCount = course._count.reviews
       const averageRating = reviewCount > 0
         ? course.reviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
         : 0
-      const totalLessons = course.sections.reduce((sum, section) => sum + section.lessons.length, 0)
+      const totalLessons = course.sections.reduce((sum, section) => sum + section._count.lessons, 0)
 
       return {
         id: course.id,
@@ -64,8 +103,8 @@ async function getFeaturedCourses(): Promise<Course[]> {
         title: course.title,
         subtitle: course.subtitle ?? '',
         description: course.description ?? '',
-  priceCents: course.priceCents,
-  thumbnailUrl: course.thumbnailUrl ?? undefined,
+        priceCents: course.priceCents,
+        thumbnailUrl: course.thumbnailUrl ?? undefined,
         category: course.category ?? '',
         level: course.level ?? '',
         language: course.language ?? '',
@@ -76,7 +115,7 @@ async function getFeaturedCourses(): Promise<Course[]> {
           image: course.createdBy.image
         },
         stats: {
-          enrollmentCount,
+          enrollmentCount: course._count.enrollments,
           reviewCount,
           averageRating: Math.round(averageRating * 10) / 10,
           totalLessons
@@ -84,13 +123,11 @@ async function getFeaturedCourses(): Promise<Course[]> {
         tags: course.courseTags.map(ct => ct.tag.name)
       }
     })
-
-    return coursesWithStats
   } catch (error) {
     console.error('Error fetching featured courses (prisma):', error)
     return []
   }
-}
+}, ['featured-courses'], { revalidate: 300 })
 
 export default async function HomePage() {
   // Fetch real featured courses
