@@ -166,8 +166,8 @@ export default async function HomePage() {
               {/* Main Hero Content */}
               <div>
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight font-hero">
-                  <span className="block">Master</span>
-                  <span className="block text-white drop-shadow-lg">Computer Science</span>
+                  <span className="block">Learn Computer Science</span>
+                  <span className="block text-white drop-shadow-lg">Courses With Us</span>
                 </h1>
 
                 <p className="text-2xl md:text-3xl text-white font-semibold mb-4">
