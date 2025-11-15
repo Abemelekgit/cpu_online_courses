@@ -241,7 +241,7 @@ export default async function HomePage() {
                       {course.stats.enrollmentCount.toLocaleString()} students
                     </div>
                   </div>
-                  <Button asChild className="w-full">
+                  <Button asChild className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
                     <Link href={`/courses/${course.slug}`}>
                       View Course
                     </Link>

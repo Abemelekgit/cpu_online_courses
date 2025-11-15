@@ -346,7 +346,7 @@ export default function CatalogClient({ initialData, initialFilters }: CatalogCl
                     </Badge>
                   </div>
 
-                  <Button asChild className="w-full h-11 gradient-accent rounded-xl font-semibold group-hover:shadow-lg transition-all duration-300">
+                  <Button asChild className="w-full h-11 rounded-xl font-semibold group-hover:shadow-lg transition-all duration-300 bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
                     <Link href={`/courses/${course.slug}`} className="flex items-center justify-center gap-2">
                       <BookOpen className="w-4 h-4" />
                       View Course

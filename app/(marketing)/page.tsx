@@ -548,7 +548,7 @@ export default function HomePage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <Button asChild className="w-full gradient-accent rounded-xl h-12 text-base font-semibold">
+                      <Button asChild className="w-full rounded-xl h-12 text-base font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
                         <Link href={`/courses/${course.slug}`}>View Course</Link>
                       </Button>
                     </motion.div>
