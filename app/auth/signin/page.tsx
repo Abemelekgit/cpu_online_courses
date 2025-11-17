@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { CheckCircle, BookOpen, Copy, Mail, Lock, Sparkles } from 'lucide-react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 type DemoCreds = {
@@ -17,7 +16,14 @@ type DemoCreds = {
   password: string
 }
 
-function DemoCredentialsRow({ role, email, password, onFill }: { role: string; email: string; password: string; onFill: (creds: DemoCreds) => void }) {
+type DemoRowProps = {
+  role: string
+  email: string
+  password: string
+  onFill: (creds: DemoCreds) => void
+}
+
+function DemoCredentialsRow({ role, email, password, onFill }: DemoRowProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -25,24 +31,27 @@ function DemoCredentialsRow({ role, email, password, onFill }: { role: string; e
       await navigator.clipboard.writeText(`${email}\t${password}`)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
-    } catch (e) {
-      // noop
+    } catch (error) {
+      // clipboard access can fail in some browsers; ignore
     }
   }
 
   return (
-    <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center justify-between rounded-xl border border-white/20 bg-white/60 p-3 text-black">
       <div>
-  <div className="text-sm font-medium text-black">{role}</div>
-  <div className="text-xs text-black/80">{email} / <span className="font-mono">{password}</span></div>
+        <div className="text-sm font-medium">{role}</div>
+        <div className="text-xs text-black/75">
+          {email} / <span className="font-mono">{password}</span>
+          {copied && <span className="ml-2 text-emerald-600">Copied!</span>}
+        </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" onClick={() => onFill({ email, password })}>
+        <Button size="sm" variant="outline" className="rounded-lg" onClick={() => onFill({ email, password })}>
           Fill
         </Button>
-        <Button size="sm" onClick={handleCopy}>
+        <Button size="sm" className="rounded-lg" onClick={handleCopy}>
           <Copy className="w-4 h-4" />
-          <span className="sr-only">Copy</span>
+          <span className="sr-only">Copy credentials</span>
         </Button>
       </div>
     </div>
@@ -80,7 +89,6 @@ function SignInForm() {
       if (result?.error) {
         setError('Invalid credentials')
       } else {
-        // Redirect based on role - will be handled by middleware
         router.push('/my-learning')
         router.refresh()
       }
@@ -92,214 +100,156 @@ function SignInForm() {
   }
 
   return (
-    <div className="min-h-screen gradient-warm flex items-center justify-center relative overflow-hidden">
-      {/* Floating decorative elements */}
-      <motion.div
-        className="absolute top-20 left-20 w-32 h-32 bg-orange-200/20 rounded-full"
-        animate={{ y: [0, -20, 0], rotate: [0, 180, 360] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-20 w-24 h-24 bg-pink-200/20 rounded-full"
-        animate={{ y: [0, 20, 0], rotate: [0, -180, -360] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-10 w-16 h-16 bg-teal-200/20 rounded-full"
-        animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      <motion.div
-        className="w-full max-w-5xl relative z-10 px-6"
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Left hero / intro */}
-          <div className="hidden md:flex flex-col gap-6 pr-6">
-            <div className="hero-illustration p-6 h-full flex flex-col justify-center items-start rounded-2xl">
-              <div className="mb-4 w-20 h-20 bg-gradient-to-br from-orange-400 to-pink-400 rounded-3xl flex items-center justify-center accent-glow">
-                <BookOpen className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="text-4xl font-hero leading-tight text-black">Welcome back to CPU Online</h1>
-              <p className="text-lg text-black/90 max-w-sm mt-2">Access courses, track progress, and continue learning where you left off. Fast sign in with seeded demo accounts for testing.</p>
-              <div className="mt-6 flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm"> <Sparkles className="w-4 h-4 text-orange-500" /> Curated curriculum</span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/80 py-1 px-3 text-sm">Secure accounts</span>
-              </div>
-            </div>
+    <div className="min-h-screen gradient-warm flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-5xl grid gap-8 md:grid-cols-[1.2fr_1fr]">
+        <section className="hidden rounded-3xl border border-white/20 bg-white/60 p-8 text-black shadow-lg md:flex md:flex-col md:justify-center">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
+            <BookOpen className="h-8 w-8" />
           </div>
-          <Card className="glass-border border-0 shadow-2xl p-8 bg-card text-black">
-            <CardHeader className="text-left p-0">
-                <motion.div
-                  className="mb-4 w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-2xl flex items-center justify-center accent-glow"
-                  whileHover={{ rotate: 5, scale: 1.02 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-                >
-                  <BookOpen className="w-8 h-8 text-white" />
-                </motion.div>
-              <CardTitle className="text-2xl text-black">Welcome Back</CardTitle>
-              <CardDescription className="text-black/80">
+          <h1 className="text-4xl font-hero leading-tight">Welcome back to CPU Online</h1>
+          <p className="mt-4 text-base text-black/80">
+            Access courses, track progress, and continue learning where you left off. Demo credentials are available for quick testing.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1">
+              <Sparkles className="h-4 w-4 text-orange-500" /> Curated curriculum
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1">
+              Secure accounts
+            </span>
+          </div>
+        </section>
+
+        <div className="flex flex-col gap-4">
+          <Card className="rounded-3xl border border-white/20 bg-white/90 text-black shadow-xl">
+            <CardHeader className="space-y-2">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
+                <BookOpen className="h-7 w-7" />
+              </div>
+              <CardTitle className="text-2xl">Welcome Back</CardTitle>
+              <CardDescription className="text-black/70">
                 Sign in to continue to your courses and progress.
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-4">
+            <CardContent className="space-y-4 pt-2">
               <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
-                <motion.div
-                  className="space-y-2"
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.12 }}
-                >
-                  <Label htmlFor="email" className="flex items-center gap-2 text-black"><Mail className="w-4 h-4 text-black/70" /> Email</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center gap-2 text-black">
+                    <Mail className="h-4 w-4 text-black/70" /> Email
+                  </Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(event) => setEmail(event.target.value)}
                     required
-                    className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
+                    className="rounded-xl border border-black/10 bg-white/70 text-black placeholder:text-black/50"
                     autoComplete="email"
                     placeholder="you@example.com"
                   />
-                </motion.div>
-                <motion.div
-                  className="space-y-2"
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.18 }}
-                >
-                  <Label htmlFor="password" className="flex items-center gap-2 text-black"><Lock className="w-4 h-4 text-black/70" /> Password</Label>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="flex items-center gap-2 text-black">
+                    <Lock className="h-4 w-4 text-black/70" /> Password
+                  </Label>
                   <Input
                     id="password"
                     name="password"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(event) => setPassword(event.target.value)}
                     required
-                    className="rounded-xl bg-white/5 text-black placeholder:text-black/60"
+                    className="rounded-xl border border-black/10 bg-white/70 text-black placeholder:text-black/50"
                     autoComplete="current-password"
                     placeholder="••••••••"
                   />
-                </motion.div>
+                </div>
 
                 {successMessage && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <Alert className="rounded-xl bg-card text-black">
-                      <CheckCircle className="h-4 w-4" />
-                      <AlertDescription>{successMessage}</AlertDescription>
-                    </Alert>
-                  </motion.div>
+                  <Alert className="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertDescription>{successMessage}</AlertDescription>
+                  </Alert>
                 )}
 
                 {error && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <Alert variant="destructive" className="rounded-xl bg-card text-black">
-                      <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                  </motion.div>
+                  <Alert variant="destructive" className="rounded-xl border border-red-200 bg-red-50 text-red-900">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
                 )}
 
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.24 }}
-                >
-                  <Button type="submit" className="w-full gradient-accent rounded-xl" disabled={isLoading}>
-                    {isLoading ? (
-                      <motion.div className="flex items-center gap-2" animate={{ opacity: [0.6, 1] }} transition={{ duration: 1, repeat: Infinity }}>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Signing in...
-                      </motion.div>
-                    ) : (
-                      'Sign In'
-                    )}
-                  </Button>
-                </motion.div>
+                <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 text-white transition-transform hover:scale-[1.02]" disabled={isLoading}>
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
+                      Signing in...
+                    </span>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
               </form>
 
-                <motion.div className="mt-4 flex justify-between items-center text-sm text-black/85" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                <p>
-                  Don't have an account?{' '}
-                  <Link href="/auth/signup" className="font-medium text-orange-600 hover:text-orange-500 transition-colors">
-                    Sign up
-                  </Link>
-                </p>
-              </motion.div>
+              <p className="text-sm text-black/70">
+                Don't have an account?{' '}
+                <Link href="/auth/signup" className="font-medium text-orange-600 hover:text-orange-500">
+                  Sign up
+                </Link>
+              </p>
             </CardContent>
           </Card>
 
-          <div className="space-y-4">
-            <Card className="border-0 shadow-lg p-6 hero-illustration bg-card text-black">
-              <CardContent>
-                <h3 className="text-lg font-semibold">Demo accounts (seeded)</h3>
-                <p className="text-sm text-black/80 mb-3">Click Fill to populate the form or Copy to copy credentials to clipboard.</p>
+          <Card className="rounded-3xl border border-white/20 bg-white/80 text-black shadow-lg">
+            <CardContent className="space-y-3">
+              <h3 className="text-base font-semibold">Demo accounts (seeded)</h3>
+              <p className="text-sm text-black/75">
+                Use these credentials to explore the dashboard quickly. Choose Fill or Copy to populate the form instantly.
+              </p>
 
-                <DemoCredentialsRow
-                  role="Instructor"
-                  email="sarah.chen@cpuonline.com"
-                  password="instructor123"
-                  onFill={(creds) => {
-                    setEmail(creds.email); setPassword(creds.password)
-                  }}
-                />
+              <DemoCredentialsRow
+                role="Instructor"
+                email="sarah.chen@cpuonline.com"
+                password="instructor123"
+                onFill={(creds) => {
+                  setEmail(creds.email)
+                  setPassword(creds.password)
+                }}
+              />
 
-                <DemoCredentialsRow
-                  role="Student"
-                  email="john.doe@student.com"
-                  password="student123"
-                  onFill={(creds) => {
-                    setEmail(creds.email); setPassword(creds.password)
-                  }}
-                />
-              </CardContent>
-            </Card>
+              <DemoCredentialsRow
+                role="Student"
+                email="john.doe@student.com"
+                password="student123"
+                onFill={(creds) => {
+                  setEmail(creds.email)
+                  setPassword(creds.password)
+                }}
+              />
+            </CardContent>
+          </Card>
 
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <p className="text-xs text-black/75">Built with care — your progress and course data are saved to the seeded demo database.</p>
-            </motion.div>
-          </div>
+          <p className="text-xs text-black/70">
+            Built for speed — the sign-in page avoids animations and heavy scripts so you can authenticate without delay.
+          </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen gradient-warm flex items-center justify-center">
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div 
-            className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.p className="text-black"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            Loading...
-          </motion.p>
-        </motion.div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen gradient-warm flex items-center justify-center">
+          <div className="text-center text-black">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-orange-600 border-t-transparent" />
+            Loading sign-in…
+          </div>
+        </div>
+      }
+    >
       <SignInForm />
     </Suspense>
   )
