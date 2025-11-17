@@ -100,8 +100,18 @@ function SignInForm() {
   }
 
   return (
-    <div className="min-h-screen gradient-warm flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-5xl grid gap-8 md:grid-cols-[1.2fr_1fr]">
+    <div className="min-h-screen gradient-warm flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <div className="w-full max-w-5xl flex flex-col gap-8 md:grid md:grid-cols-[1.15fr_1fr]">
+        <section className="rounded-3xl border border-white/20 bg-white/60 p-6 text-black shadow-lg md:hidden">
+          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
+            <BookOpen className="h-6 w-6" />
+          </div>
+          <h1 className="text-3xl font-hero leading-tight">Welcome back to CPU Online</h1>
+          <p className="mt-3 text-base text-black/80">
+            Sign in to pick up where you left off. Demo credentials are ready if you need a quick start.
+          </p>
+        </section>
+
         <section className="hidden rounded-3xl border border-white/20 bg-white/60 p-8 text-black shadow-lg md:flex md:flex-col md:justify-center">
           <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
             <BookOpen className="h-8 w-8" />
@@ -120,8 +130,8 @@ function SignInForm() {
           </div>
         </section>
 
-        <div className="flex flex-col gap-4">
-          <Card className="rounded-3xl border border-white/20 bg-white/90 text-black shadow-xl">
+        <div className="flex flex-col gap-5">
+          <Card className="w-full rounded-3xl border border-white/20 bg-white/90 text-black shadow-xl">
             <CardHeader className="space-y-2">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
                 <BookOpen className="h-7 w-7" />
@@ -179,7 +189,7 @@ function SignInForm() {
                   </Alert>
                 )}
 
-                <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 text-white transition-transform hover:scale-[1.02]" disabled={isLoading}>
+                <Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 text-white transition-transform hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-orange-500/50" disabled={isLoading}>
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
@@ -191,7 +201,7 @@ function SignInForm() {
                 </Button>
               </form>
 
-              <p className="text-sm text-black/70">
+              <p className="text-sm text-black/70 text-center sm:text-left">
                 Don't have an account?{' '}
                 <Link href="/auth/signup" className="font-medium text-orange-600 hover:text-orange-500">
                   Sign up
@@ -200,7 +210,7 @@ function SignInForm() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-3xl border border-white/20 bg-white/80 text-black shadow-lg">
+          <Card className="w-full rounded-3xl border border-white/20 bg-white/80 text-black shadow-lg">
             <CardContent className="space-y-3">
               <h3 className="text-base font-semibold">Demo accounts (seeded)</h3>
               <p className="text-sm text-black/75">
@@ -229,7 +239,7 @@ function SignInForm() {
             </CardContent>
           </Card>
 
-          <p className="text-xs text-black/70">
+          <p className="text-xs text-black/70 text-center sm:text-left">
             Built for speed — the sign-in page avoids animations and heavy scripts so you can authenticate without delay.
           </p>
         </div>
