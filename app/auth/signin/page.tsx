@@ -96,10 +96,8 @@ function SignInForm() {
         setError('Invalid credentials')
         setIsLoading(false)
       } else {
-        // Don't wait for refresh, navigate immediately
+        // Navigate immediately without waiting
         router.push('/my-learning')
-        // Defer refresh to avoid blocking navigation
-        setTimeout(() => router.refresh(), 100)
       }
     } catch (error) {
       setError('Something went wrong')
@@ -108,27 +106,27 @@ function SignInForm() {
   }
 
   return (
-    <div className="min-h-screen gradient-warm flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-      <div className="w-full max-w-5xl flex flex-col gap-6 md:gap-8 md:grid md:grid-cols-[1.15fr_1fr]">
-        <section className="rounded-3xl border border-white/20 bg-white/60 p-5 text-black shadow-lg md:hidden">
-          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
+    <div className="min-h-screen gradient-warm flex items-center justify-center px-4 py-8 sm:py-10 sm:px-6 lg:px-8">
+      <div className="w-full max-w-5xl flex flex-col gap-5 md:gap-6 md:grid md:grid-cols-[1.15fr_1fr]">
+        <section className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/60 p-4 sm:p-5 text-black shadow-lg md:hidden">
+          <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
             <BookOpen className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-hero leading-tight">Welcome back to CPU Online</h1>
-          <p className="mt-3 text-sm sm:text-base text-black/80">
-            Sign in to pick up where you left off. Demo credentials are ready if you need a quick start.
+          <h1 className="text-2xl sm:text-3xl font-hero leading-tight">Welcome back</h1>
+          <p className="mt-2 text-sm sm:text-base text-black/80">
+            Sign in to continue your learning.
           </p>
         </section>
 
-        <section className="hidden rounded-3xl border border-white/20 bg-white/60 p-8 text-black shadow-lg md:flex md:flex-col md:justify-center">
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
+        <section className="hidden rounded-3xl border border-white/20 bg-white/60 p-6 md:p-8 text-black shadow-lg md:flex md:flex-col md:justify-center">
+          <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
             <BookOpen className="h-8 w-8" />
           </div>
-          <h1 className="text-4xl font-hero leading-tight">Welcome back to CPU Online</h1>
-          <p className="mt-4 text-base text-black/80">
-            Access courses, track progress, and continue learning where you left off. Demo credentials are available for quick testing.
+          <h1 className="text-3xl lg:text-4xl font-hero leading-tight">Welcome back to CPU Online</h1>
+          <p className="mt-3 text-sm lg:text-base text-black/80">
+            Access courses, track progress, and continue learning where you left off.
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1">
               <Sparkles className="h-4 w-4 text-orange-500" /> Curated curriculum
             </span>
@@ -138,18 +136,18 @@ function SignInForm() {
           </div>
         </section>
 
-        <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex flex-col gap-3 md:gap-4">
           <Card className="w-full rounded-2xl sm:rounded-3xl border border-white/20 bg-white/90 text-black shadow-xl">
-            <CardHeader className="space-y-2 p-5 sm:p-6">
+            <CardHeader className="space-y-2 p-4 sm:p-5">
               <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-400 to-pink-400 text-white">
                 <BookOpen className="h-6 w-6 sm:h-7 sm:w-7" />
               </div>
               <CardTitle className="text-xl sm:text-2xl">Welcome Back</CardTitle>
               <CardDescription className="text-sm sm:text-base text-black/70">
-                Sign in to continue to your courses and progress.
+                Sign in to continue to your courses.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 p-5 sm:p-6 pt-2">
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-5 pt-2">
               <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" autoComplete="on">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="flex items-center gap-2 text-black text-sm">
@@ -223,10 +221,10 @@ function SignInForm() {
           </Card>
 
           <Card className="w-full rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 text-black shadow-lg">
-            <CardContent className="space-y-3 p-5 sm:p-6">
-              <h3 className="text-base font-semibold">Demo accounts (seeded)</h3>
+            <CardContent className="space-y-2.5 sm:space-y-3 p-4 sm:p-5">
+              <h3 className="text-sm sm:text-base font-semibold">Demo accounts</h3>
               <p className="text-xs sm:text-sm text-black/75">
-                Use these credentials to explore the dashboard quickly. Choose Fill or Copy to populate the form instantly.
+                Quick testing credentials. Click Fill or Copy.
               </p>
 
               <DemoCredentialsRow role="Instructor" email="sarah.chen@cpuonline.com" password="instructor123" onFill={handleFill} />
@@ -235,8 +233,8 @@ function SignInForm() {
             </CardContent>
           </Card>
 
-          <p className="text-xs text-black/70 text-center sm:text-left px-2">
-            Built for speed — the sign-in page avoids animations and heavy scripts so you can authenticate without delay.
+          <p className="text-xs text-black/70 text-center sm:text-left px-1">
+            Optimized for instant loading and smooth navigation.
           </p>
         </div>
       </div>
@@ -250,8 +248,8 @@ export default function SignInPage() {
       fallback={
         <div className="min-h-screen gradient-warm flex items-center justify-center">
           <div className="text-center text-black">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-orange-600 border-t-transparent" />
-            Loading sign-in…
+            <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-2 border-orange-600 border-t-transparent" />
+            <p className="text-sm">Loading…</p>
           </div>
         </div>
       }
