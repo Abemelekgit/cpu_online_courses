@@ -11,9 +11,10 @@ const MIME_MAP: Record<string, string> = {
 
 export async function GET(
   _request: Request,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
-  const safeFilename = path.basename(params.filename)
+  const { filename } = await params
+  const safeFilename = path.basename(filename)
   const filePath = path.join(process.cwd(), 'picturesofcpucollegeonline', safeFilename)
   try {
     const file = await fs.readFile(filePath)
