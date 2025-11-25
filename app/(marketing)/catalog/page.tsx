@@ -2,20 +2,15 @@ import { getPublicCourses, SortOption } from '@/lib/courses'
 import CatalogClient from './CatalogClient'
 
 type CatalogPageProps = {
-  // Next.js PageProps typing in some versions may allow searchParams to be a Promise.
-  // Accept either the resolved record or a Promise of the record to satisfy the PageProps constraint.
-  searchParams?: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>
+  // Align with Next.js 15 PageProps definition where searchParams can be a Promise.
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
-  // Resolve searchParams if it's delivered as a Promise (type-safe for different Next.js versions)
-  const resolvedSearchParams: Record<string, string | string[] | undefined> | undefined =
-    searchParams && typeof (searchParams as any)?.then === 'function'
-      ? await (searchParams as Promise<Record<string, string | string[] | undefined>>)
-      : (searchParams as Record<string, string | string[] | undefined> | undefined)
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
 
   const search = typeof resolvedSearchParams?.search === 'string' ? resolvedSearchParams.search : ''
-  const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams?.category : ''
+  const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : ''
   const level = typeof resolvedSearchParams?.level === 'string' ? resolvedSearchParams.level : ''
   const sortParam = typeof resolvedSearchParams?.sortBy === 'string' ? resolvedSearchParams.sortBy : 'popularity'
   const allowedSorts: SortOption[] = ['popularity', 'rating', 'newest', 'price-low', 'price-high']
