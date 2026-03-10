@@ -4,11 +4,10 @@ import React, { memo, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { BookOpen, User, LogOut, Settings, Search, ShoppingCart, Globe } from 'lucide-react'
+import { BookOpen, User, LogOut, Settings, Globe } from 'lucide-react'
 import ThemeToggle from '@/components/ui/theme-toggle'
 
 function NavigationComponent() {
@@ -37,45 +36,36 @@ function NavigationComponent() {
   }, [router, session?.user])
 
   return (
-    <motion.nav
-      className="sticky top-0 z-50 shadow-sm border-b border-theme bg-card"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-    >
+    <nav className="sticky top-0 z-50 border-b border-border/80 bg-card/90 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            >
+            <div className="transition-transform duration-150 hover:scale-[1.02] active:scale-95">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-sm">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-foreground">CPU Online Courses</span>
+                <span className="text-xl font-semibold tracking-tight text-foreground">CPU Learn</span>
               </Link>
-            </motion.div>
+            </div>
 
             <div className="hidden lg:flex items-center space-x-6">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+              <div>
                 <Link href="/catalog" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
                   Browse Courses
                 </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+              </div>
+              <div>
                 <Link href="/my-learning" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
                   My Learning
                 </Link>
-              </motion.div>
+              </div>
               {session?.user && (session.user as any).role === 'ADMIN' && (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+                <div>
                   <Link href="/admin" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
                     Admin
                   </Link>
-                </motion.div>
+                </div>
               )}
             </div>
           </div>
@@ -84,18 +74,18 @@ function NavigationComponent() {
             <ThemeToggle />
 
             {status === 'loading' ? (
-              <motion.div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1, repeat: Infinity }} />
+              <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
             ) : session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+                  <div className="transition-transform duration-150 hover:scale-[1.03] active:scale-95">
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={session.user?.image || ''} alt={session.user?.name || ''} />
                         <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                       </Avatar>
                     </Button>
-                  </motion.div>
+                  </div>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-56 rounded-2xl" align="end" forceMount>
@@ -138,19 +128,19 @@ function NavigationComponent() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <motion.div whileHover={{ scale: 1.02 }} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }} className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 <Button variant="ghost" asChild>
                   <Link href="/auth/signin">Sign In</Link>
                 </Button>
-                <Button className="gradient-primary">
+                <Button className="bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 text-white border-0">
                   <Link href="/auth/signup">Sign Up</Link>
                 </Button>
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   )
 }
 

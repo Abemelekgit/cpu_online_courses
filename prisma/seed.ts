@@ -65,74 +65,38 @@ async function main() {
   const students = await Promise.all([
     prisma.user.create({
       data: {
-        email: 'john.doe@student.com',
-        name: 'John Doe',
+        email: 'abemelek.negusu@student.com',
+        name: 'Abemelek Negusu',
         password: studentPassword,
         role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/ashenafifrontpicture.jpg',
       },
     }),
     prisma.user.create({
       data: {
-        email: 'jane.smith@student.com',
-        name: 'Jane Smith',
+        email: 'million.abebe@student.com',
+        name: 'MIllion Abebe',
         password: studentPassword,
         role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/millionpicture.jpg',
       },
     }),
     prisma.user.create({
       data: {
-        email: 'mike.johnson@student.com',
-        name: 'Mike Johnson',
+        email: 'rekik.dereje@student.com',
+        name: 'Rekik dereje',
         password: studentPassword,
         role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/rekikepic.jpg',
       },
     }),
     prisma.user.create({
       data: {
-        email: 'sarah.wilson@student.com',
-        name: 'Sarah Wilson',
+        email: 'ashenafi.tesfaye@student.com',
+        name: 'Ashenafi tesfaye',
         password: studentPassword,
         role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: 'david.brown@student.com',
-        name: 'David Brown',
-        password: studentPassword,
-        role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: 'emma.davis@student.com',
-        name: 'Emma Davis',
-        password: studentPassword,
-        role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: 'james.miller@student.com',
-        name: 'James Miller',
-        password: studentPassword,
-        role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: 'lisa.garcia@student.com',
-        name: 'Lisa Garcia',
-        password: studentPassword,
-        role: 'STUDENT',
-        image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+        image: '/api/assets/ashenafifrontpicture.jpg',
       },
     }),
   ])

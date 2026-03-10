@@ -4,6 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import { Users, GraduationCap, Calendar } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 async function getUsers() {
   const users = await prisma.user.findMany({
     include: {

@@ -105,10 +105,10 @@
   --sidebar-border: oklch(0.90 0.01 30);
   --sidebar-ring: oklch(0.65 0.20 15);
   --destructive-foreground: oklch(1.0000 0 0);
-          --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Montserrat", sans-serif;
-            --font-serif: Georgia, 'Times New Roman', serif;
-            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Fira Code', 'Roboto Mono', monospace;
-            --font-hero: Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-manrope), "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+  --font-serif: var(--font-fraunces), "Fraunces", "Iowan Old Style", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Fira Code', 'Roboto Mono', monospace;
+  --font-hero: var(--font-fraunces), "Fraunces", "Iowan Old Style", serif;
   --shadow-color: hsl(15 30% 25%);
   --shadow-opacity: 0.08;
   --shadow-blur: 8px;
@@ -163,10 +163,10 @@
   --sidebar-ring: oklch(0.7871 0.1187 304.7693);
   --destructive-foreground: oklch(0.2429 0.0304 283.9110);
   --radius: 0.35rem;
-          --font-sans: Montserrat, sans-serif;
-          --font-serif: 'Playfair Display', 'Times New Roman', serif;
-          --font-mono: Fira Code, monospace;
-          --font-hero: 'Playfair Display', 'Times New Roman', serif;
+  --font-sans: var(--font-manrope), "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+  --font-serif: var(--font-fraunces), "Fraunces", "Iowan Old Style", serif;
+  --font-mono: Fira Code, monospace;
+  --font-hero: var(--font-fraunces), "Fraunces", "Iowan Old Style", serif;
   --shadow-color: hsl(240 30% 25%);
   --shadow-opacity: 0.12;
   --shadow-blur: 6px;
@@ -265,6 +265,9 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
