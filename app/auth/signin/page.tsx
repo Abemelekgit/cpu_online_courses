@@ -229,7 +229,7 @@ function SignInForm() {
 
               <DemoCredentialsRow role="Instructor" email="sarah.chen@cpuonline.com" password="instructor123" onFill={handleFill} />
 
-              <DemoCredentialsRow role="Student" email="john.doe@student.com" password="student123" onFill={handleFill} />
+              <DemoCredentialsRow role="Student" email="abemelek.negusu@student.com" password="student123" onFill={handleFill} />
             </CardContent>
           </Card>
 

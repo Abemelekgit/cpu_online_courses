@@ -1,17 +1,18 @@
 'use client'
 
-import { useState, useEffect, useRef, use } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState, useEffect, use } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Play, CheckCircle, Lock, Clock } from 'lucide-react'
-import { LoadingSpinner, LessonSkeleton } from '@/components/LoadingSpinner'
+import { Play, CheckCircle, Clock } from 'lucide-react'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
 import dynamic from 'next/dynamic'
-const VideoPlayer = dynamic(() => import('@/components/player/VideoPlayer').then(m => m.VideoPlayer), { ssr: false, loading: () => <div className="min-h-[360px] flex items-center justify-center">Loading video…</div> })
-import { motion } from 'framer-motion'
 import Link from 'next/link'
+
+const VideoPlayer = dynamic(() => import('@/components/player/VideoPlayer').then((m) => m.VideoPlayer), {
+  ssr: false,
+  loading: () => <div className="min-h-[360px] flex items-center justify-center">Loading video...</div>,
+})
 
 interface Lesson {
   id: string
@@ -45,10 +46,7 @@ interface Course {
 }
 
 interface LessonPageProps {
-  params: Promise<{
-    courseSlug: string
-    lessonSlug: string
-  }>
+  params: Promise<{ courseSlug: string; lessonSlug: string }>
 }
 
 export default function LessonPage({ params }: LessonPageProps) {
@@ -56,24 +54,18 @@ export default function LessonPage({ params }: LessonPageProps) {
   const [course, setCourse] = useState<Course | null>(null)
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [progress, setProgress] = useState(0)
   const [isCompleted, setIsCompleted] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const router = useRouter()
 
   useEffect(() => {
-    fetchCourseData()
-  }, [unwrappedParams.courseSlug, unwrappedParams.lessonSlug])
-
-  const fetchCourseData = async () => {
-    try {
-      const response = await fetch(`/api/courses/${unwrappedParams.courseSlug}`)
-      if (response.ok) {
+    async function fetchCourseData() {
+      try {
+        const response = await fetch(`/api/courses/${unwrappedParams.courseSlug}`)
+        if (!response.ok) return
         const courseData = await response.json()
         setCourse(courseData)
-        
-        // Find current lesson with section information
-        let lesson = null
+
+        let lesson: Lesson | null = null
         for (const section of courseData.sections) {
           const foundLesson = section.lessons.find((l: Lesson) => l.slug === unwrappedParams.lessonSlug)
           if (foundLesson) {
@@ -85,310 +77,107 @@ export default function LessonPage({ params }: LessonPageProps) {
                 course: {
                   id: courseData.id,
                   title: courseData.title,
-                  slug: courseData.slug
-                }
-              }
+                  slug: courseData.slug,
+                },
+              },
             }
             break
           }
         }
-        
         setCurrentLesson(lesson)
-        
-        // Load progress
-        if (lesson) {
-          const progressResponse = await fetch(`/api/progress?lessonId=${lesson.id}`)
-          if (progressResponse.ok) {
-            const progressData = await progressResponse.json()
-            setProgress(progressData.positionSec || 0)
-            setIsCompleted(progressData.completed || false)
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching course data:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleVideoTimeUpdate = async () => {
-    if (!videoRef.current || !currentLesson) return
-
-    const currentTime = videoRef.current.currentTime
-    const duration = videoRef.current.duration
-
-    if (duration > 0) {
-      const progressPercent = (currentTime / duration) * 100
-      
-      // Update progress every 10 seconds
-      if (Math.floor(currentTime) % 10 === 0) {
-        try {
-          await fetch('/api/progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              lessonId: currentLesson.id,
-              positionSec: Math.floor(currentTime),
-              completed: progressPercent >= 90
-            })
-          })
-        } catch (error) {
-          console.error('Error updating progress:', error)
-        }
-      }
-
-      // Mark as completed at 90%
-      if (progressPercent >= 90 && !isCompleted) {
-        setIsCompleted(true)
-        try {
-          await fetch('/api/progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              lessonId: currentLesson.id,
-              positionSec: Math.floor(currentTime),
-              completed: true
-            })
-          })
-        } catch (error) {
-          console.error('Error marking lesson as completed:', error)
-        }
+      } finally {
+        setIsLoading(false)
       }
     }
-  }
+
+    fetchCourseData()
+  }, [unwrappedParams.courseSlug, unwrappedParams.lessonSlug])
 
   const handleVideoEnded = async () => {
     if (!currentLesson) return
-    
-    // Mark lesson as completed when video ends
     setIsCompleted(true)
-    try {
-      await fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lessonId: currentLesson.id,
-          completed: true
-        })
-      })
-      
-      // Optionally auto-advance to next lesson
-      // goToNextLesson()
-    } catch (error) {
-      console.error('Error marking lesson as completed:', error)
-    }
+    await fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lessonId: currentLesson.id, completed: true }),
+    })
   }
 
-  const goToNextLesson = () => {
-    if (!course || !currentLesson) return
-
-    const allLessons = course.sections.flatMap(section => section.lessons)
-    const currentIndex = allLessons.findIndex(lesson => lesson.id === currentLesson.id)
-    const nextLesson = allLessons[currentIndex + 1]
-
-    if (nextLesson) {
-      router.push(`/learn/${unwrappedParams.courseSlug}/${nextLesson.slug}`)
-    } else {
-      router.push('/my-learning')
-    }
-  }
-
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
+  if (isLoading) return <LoadingSpinner />
 
   if (!course || !currentLesson) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Lesson not found</h1>
-          <Button asChild>
-            <Link href="/my-learning">Back to My Learning</Link>
-          </Button>
+          <h1 className="text-2xl font-semibold mb-4">Lesson not found</h1>
+          <Button asChild><Link href="/my-learning">Back to My Learning</Link></Button>
         </div>
       </div>
     )
   }
 
-  const allLessons = course.sections.flatMap(section => section.lessons)
-  const currentIndex = allLessons.findIndex(lesson => lesson.id === currentLesson.id)
+  const allLessons = course.sections.flatMap((section) => section.lessons)
+  const currentIndex = allLessons.findIndex((lesson) => lesson.id === currentLesson.id)
   const nextLesson = allLessons[currentIndex + 1]
 
   return (
-    <div className="min-h-screen gradient-warm">
-      <div className="flex h-screen">
-        {/* Sidebar - Curriculum */}
-        <motion.div 
-          className="w-80 glass border-r overflow-y-auto"
-          initial={{ x: -320, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <div className="p-4 border-b">
-            <motion.h2 
-              className="font-semibold text-lg"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              {course.title}
-            </motion.h2>
-            <motion.p 
-              className="text-sm text-gray-600"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              {course.sections.length} sections
-            </motion.p>
-          </div>
-          
-          <div className="p-4 space-y-4">
-            {course.sections.map((section, sectionIndex) => (
-              <motion.div 
-                key={section.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + sectionIndex * 0.1 }}
-              >
-                <h3 className="font-medium text-sm text-gray-700 mb-2">{section.title}</h3>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#e9f4ff,transparent_50%),#f8fbff]">
+      <div className="mx-auto flex max-w-[1400px] gap-4 p-4 lg:p-6">
+        <aside className="hidden w-80 shrink-0 rounded-3xl border border-slate-200 bg-white/95 p-4 lg:block">
+          <h2 className="text-lg font-semibold text-slate-900">{course.title}</h2>
+          <p className="mt-1 text-sm text-slate-600">{course.sections.length} sections</p>
+          <div className="mt-4 space-y-4">
+            {course.sections.map((section) => (
+              <div key={section.id}>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{section.title}</h3>
                 <div className="space-y-1">
-                  {section.lessons.map((lesson, lessonIndex) => (
-                    <motion.div
+                  {section.lessons.map((lesson) => (
+                    <Link
                       key={lesson.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 + lessonIndex * 0.05 }}
+                      href={`/learn/${unwrappedParams.courseSlug}/${lesson.slug}`}
+                      className={`block rounded-xl px-3 py-2 text-sm ${lesson.id === currentLesson.id ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
                     >
-                      <Link
-                        href={`/learn/${unwrappedParams.courseSlug}/${lesson.slug}`}
-                        className={`flex items-center space-x-2 p-3 rounded-xl text-sm transition-all duration-200 ${
-                          lesson.id === currentLesson.id
-                            ? 'bg-orange-100 text-orange-700 shadow-md'
-                            : 'hover:bg-gray-100 hover:shadow-sm'
-                        }`}
-                      >
-                        <div className="flex-shrink-0">
-                          {lesson.id === currentLesson.id ? (
-                            <motion.div
-                              animate={{ scale: [1, 1.1, 1] }}
-                              transition={{ duration: 1, repeat: Infinity }}
-                            >
-                              <Play className="w-4 h-4" />
-                            </motion.div>
-                          ) : isCompleted ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="truncate">{lesson.title}</p>
-                          {lesson.durationSec && (
-                            <p className="text-xs text-gray-500">
-                              {Math.floor(lesson.durationSec / 60)}m
-                            </p>
-                          )}
-                        </div>
-                        {lesson.freePreview && (
-                          <Badge variant="outline" className="text-xs">
-                            Free
-                          </Badge>
-                        )}
-                      </Link>
-                    </motion.div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="line-clamp-1">{lesson.title}</span>
+                        {lesson.freePreview && <Badge variant="outline" className="text-[10px]">Free</Badge>}
+                      </div>
+                    </Link>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </aside>
 
-        {/* Main Content */}
-        <motion.div 
-          className="flex-1 flex flex-col"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          {/* Video Player */}
-          <div className="flex-1 p-4">
-            <motion.div 
-              className="w-full h-full rounded-2xl overflow-hidden shadow-2xl"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <VideoPlayer
-                src={currentLesson.videoUrl || ''}
-                onTimeUpdate={handleVideoTimeUpdate}
-                onEnded={handleVideoEnded}
-                className="w-full h-full rounded-2xl"
-              />
-            </motion.div>
+        <main className="min-w-0 flex-1">
+          <div className="overflow-hidden rounded-3xl border border-slate-200 bg-black">
+            <VideoPlayer src={currentLesson.videoUrl || ''} onEnded={handleVideoEnded} className="w-full aspect-video" />
           </div>
 
-          {/* Lesson Info */}
-          <motion.div 
-            className="glass border-t p-6"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <div className="flex items-start justify-between mb-4">
+          <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h1 className="text-2xl font-bold mb-2">{currentLesson.title}</h1>
-                <p className="text-gray-600">
-                  {currentLesson.section.title} • Lesson {currentIndex + 1} of {allLessons.length}
-                </p>
+                <h1 className="text-xl font-semibold text-slate-900">{currentLesson.title}</h1>
+                <p className="mt-1 text-sm text-slate-600">{currentLesson.section.title} • Lesson {currentIndex + 1} of {allLessons.length}</p>
               </div>
-              {isCompleted && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Completed
-                  </Badge>
-                </motion.div>
-              )}
+              {isCompleted && <Badge className="bg-emerald-100 text-emerald-800"><CheckCircle className="mr-1 h-4 w-4" />Completed</Badge>}
             </div>
 
-            <div className="flex items-center space-x-4 mb-4">
-              {currentLesson.durationSec && (
-                <div className="flex items-center space-x-1 text-gray-600">
-                  <Clock className="w-4 h-4" />
-                  <span>{Math.floor(currentLesson.durationSec / 60)} minutes</span>
-                </div>
-              )}
-            </div>
+            {currentLesson.durationSec && (
+              <p className="mt-3 inline-flex items-center gap-1 text-sm text-slate-600"><Clock className="h-4 w-4" />{Math.floor(currentLesson.durationSec / 60)} minutes</p>
+            )}
 
-            <div className="flex items-center space-x-4">
+            <div className="mt-4">
               {nextLesson ? (
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button onClick={goToNextLesson} className="gradient-accent">
-                    Next Lesson: {nextLesson.title}
-                  </Button>
-                </motion.div>
+                <Button onClick={() => router.push(`/learn/${unwrappedParams.courseSlug}/${nextLesson.slug}`)} className="bg-slate-900 hover:bg-slate-800">
+                  <Play className="mr-2 h-4 w-4" />Next Lesson: {nextLesson.title}
+                </Button>
               ) : (
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button asChild className="gradient-primary">
-                    <Link href="/my-learning">Back to My Learning</Link>
-                  </Button>
-                </motion.div>
+                <Button asChild className="bg-slate-900 hover:bg-slate-800"><Link href="/my-learning">Back to My Learning</Link></Button>
               )}
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </main>
       </div>
     </div>
   )
